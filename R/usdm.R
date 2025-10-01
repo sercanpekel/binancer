@@ -97,7 +97,7 @@ usdm_v1_premium_index <- function(symbol) {
     res[, time := as_timestamp(time)]
 }
 
-#' Open new order on the Binance USDM account
+#' Open new order on the Binance Coin-m account
 #'
 #' This function serves as a low level entry for order classes.
 #' Do not use it directly.
@@ -132,7 +132,42 @@ usdm_v1_new_order <- function(symbol,
     as.data.table(order)
 }
 
-#' Get all open orders of a symbol on USDM.
+#' Open new order on the Binance USDM account
+#'
+#' This function serves as a low level entry for order classes.
+#' Do not use it directly.
+#'
+#' @param symbol string
+#' @param side enum
+#' @param position_side enum
+#' @param type enum
+#' @param ... list
+#' @return data.table
+#' @export
+usdm_um_new_order <- function(symbol,
+                              side = BINANCE$SIDE,
+                              position_side = BINANCE$USDM$POSITION_SIDE,
+                              type = BINANCE$USDM$TYPE,
+                              ...) {
+    params <- list(
+        symbol = symbol,
+        side = match.arg(side),
+        positionSide = match.arg(position_side),
+        type = match.arg(type),
+        ...
+    )
+
+    order <- usdm_query( 
+        "/papi/v1/um/order",
+        method = "POST",
+        params = params,
+        sign = TRUE
+    )
+
+    as.data.table(order)
+}
+
+#' Get all open orders of a symbol on Coin-M.
 #'
 #' Get all open orders on a symbol. Careful when accessing this with no symbol.
 #' Weight: 1 for a single symbol; 40 when the symbol parameter is omitted.
@@ -155,6 +190,31 @@ usdm_v1_open_orders <- function(symbol) {
 
     rbindlist(order)
 }
+
+#' Get all open orders of a symbol on USDM.
+#'
+#' Get all open orders on a symbol. Careful when accessing this with no symbol.
+#' Weight: 1 for a single symbol; 40 when the symbol parameter is omitted.
+#'
+#' @param symbol optional string
+#' @return data.table
+#' @export
+usdm_um_open_orders <- function(symbol) {
+    params <- list()
+
+    if (!missing(symbol)) {
+        params$symbol <- symbol
+    }
+
+    order <- usdm_query(
+        "/papi/v1/um/openOrders",
+        params = params,
+        sign = TRUE
+    )
+
+    rbindlist(order)
+}
+
 
 #' Get positions of a symbol or all symbols on USDM.
 #' @param symbol optional string
