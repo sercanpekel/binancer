@@ -254,6 +254,24 @@ usdm_v1_trades <- function(symbol) {
     )
 }
 
+#' Trade list USDM (sp)
+#' @return data.table
+#' @export
+usdm_um_trades <- function(symbol) {
+    params <- list()
+
+    if (!missing(symbol)) {
+        params$symbol <- symbol
+    }
+
+    rbindlist(
+        usdm_query(
+            "/papi/v1/um/userTrades",
+            sign = TRUE
+        )
+    )
+}
+
 #' Convert columns of positions into numeric.
 #' @param positions data.table
 #' @return data.table
