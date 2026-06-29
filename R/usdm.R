@@ -249,6 +249,7 @@ usdm_v1_trades <- function(symbol) {
     rbindlist(
         usdm_query(
             "/papi/v1/cm/userTrades",
+            params = params,
             sign = TRUE
         )
     )
@@ -267,6 +268,7 @@ usdm_um_trades <- function(symbol) {
     rbindlist(
         usdm_query(
             "/papi/v1/um/userTrades",
+            params = params,
             sign = TRUE
         )
     )
